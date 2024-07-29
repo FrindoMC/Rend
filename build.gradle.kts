@@ -3,6 +3,7 @@ import org.apache.commons.lang3.SystemUtils
 plugins {
     idea
     java
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.21"
     id("gg.essential.loom") version "0.10.0.+"
     id("dev.architectury.architectury-pack200") version "0.1.3"
     id("com.github.johnrengelman.shadow") version "8.1.1"
@@ -139,12 +140,8 @@ tasks.jar {
 tasks.shadowJar {
     destinationDirectory.set(layout.buildDirectory.dir("badjars"))
     archiveClassifier.set("all-dev")
-    configurations = listOf(shadowImpl)
-    doLast {
-        configurations.forEach {
-            println("Copying jars into mod: ${it.files}")
-        }
-    }
+    configurations = emptyList()
+}
 
     // If you want to include other dependencies and shadow them, you can relocate them in here
     fun relocate(name: String) = relocate(name, "$baseGroup.deps.$name")
