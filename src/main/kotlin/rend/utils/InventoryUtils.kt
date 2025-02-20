@@ -168,23 +168,12 @@ object InventoryUtils {
             val stack = container.getSlot(slot).stack
 
             if (stack != null && stack.hasDisplayName() && stack.displayName.contains(displayName, true)) {
-                return slot // Return the slot index immediately when found
+                return slot
             }
         }
 
         return null
     }
-
-//    fun EntityPlayerSP?.hasItem(item: Item): Pair<Boolean, Int> {
-//        for (i in 0..8) {  // Check hotbar (slots 0 to 8)
-//            val itemStack = mc.thePlayer.inventory.getStackInSlot(i)
-//            if (itemStack != null && itemStack.item == item) {
-//                return Pair(true, i)  // Item found, return true and slot index
-//            }
-//        }
-//        return Pair(false, -1)  // Item not found, return false and -1
-//    }
-
 
 
 
