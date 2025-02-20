@@ -1,0 +1,13 @@
+{
+  "package": "rend.mixin",
+  "refmap": "mixins.rend.refmap.json",
+  "minVersion": "0.7",
+  "compatibilityLevel": "JAVA_8",
+  "client": [
+    "MinecraftAccessor",
+    "MixinMinecraft"
+  ],
+  "mixins": [
+    "MixinNetworkManager"
+  ]
+}

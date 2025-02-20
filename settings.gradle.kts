@@ -23,4 +23,4 @@ plugins {
 }
 
 
-rootProject.name = "Frindo"
+rootProject.name = "Rend"
