@@ -51,18 +51,33 @@ object Rend {
 
     @SubscribeEvent
     fun onGuiOpen(e: GuiEvent.Loaded) {
-        if (e.name == "Your Equipment and Stats" && isWaitingGui && hitCount == 2) {
+        if (e.name == "Your Equipment and Stats" && isWaitingGui) {
             isWaitingGui = false
-            actionQueue.addAll(listOf(
-                ActionTask(3) { findItemInContainer("Warden")?.let { clickSlot(it) } ?: return@ActionTask stopMacro(); hitCount = 0 },
-                ActionTask(1) { mc.thePlayer.closeScreen() },
-                ActionTask(1) { swapToItem("End Stone") },
-                ActionTask(3) { rightClick() },
-                ActionTask(2) { swapToItem("Bonemerang") },
-                ActionTask(RendConfig.leftClickDelay) { leftClick() },
-                ActionTask(6) { swapToItem("Terminator"); isRunning = false }
-            ))
+
+            Thread({
+                for (i in 0..100) {
+                    if (hitCount >= 2) {
+                        secondQueue()
+                        return@Thread
+                    }
+                    Thread.sleep(20)
+                }
+                modMessage("Couldn't detect back bone within time stopping macro..")
+                stopMacro()
+            }, "HitCountChecker").start()
         }
+    }
+
+    private fun secondQueue() {
+        actionQueue.addAll(listOf(
+            ActionTask(2) { findItemInContainer("Warden")?.let { clickSlot(it) } ?: return@ActionTask stopMacro(); hitCount = 0 },
+            ActionTask(1) { mc.thePlayer.closeScreen() },
+            ActionTask(1) { swapToItem("End Stone") },
+            ActionTask(3) { rightClick() },
+            ActionTask(2) { swapToItem("Bonemerang") },
+            ActionTask(RendConfig.leftClickDelay) { leftClick() },
+            ActionTask(6) { swapToItem("Terminator"); isRunning = false }
+        ))
     }
 
     @SubscribeEvent
