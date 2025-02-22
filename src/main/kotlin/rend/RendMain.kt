@@ -3,14 +3,17 @@ package rend
 import kotlinx.coroutines.*
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiChest
+import net.minecraft.client.settings.KeyBinding
 import net.minecraft.inventory.ContainerChest
 import net.minecraftforge.client.ClientCommandHandler
 import net.minecraftforge.client.event.GuiOpenEvent
 import net.minecraftforge.common.MinecraftForge
+import net.minecraftforge.fml.client.registry.ClientRegistry
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import org.lwjgl.input.Keyboard
 import rend.utils.GuiEvent
 import rend.utils.Utils
 import kotlin.coroutines.EmptyCoroutineContext
@@ -37,6 +40,7 @@ class RendMain {
         ).forEach(MinecraftForge.EVENT_BUS::register)
 
         ClientCommandHandler.instance.registerCommand(RendCommand)
+        ClientRegistry.registerKeyBinding(rendKeybind)
     }
 
     val scope = CoroutineScope(SupervisorJob() + EmptyCoroutineContext)
@@ -83,5 +87,6 @@ class RendMain {
 
     companion object {
         val mc: Minecraft = Minecraft.getMinecraft()
+        var rendKeybind = KeyBinding("STOP REND", Keyboard.KEY_NONE, "Rend")
     }
 }

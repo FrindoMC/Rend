@@ -2,7 +2,9 @@ package rend
 
 import net.minecraft.inventory.ContainerChest
 import net.minecraft.network.play.server.S29PacketSoundEffect
+import net.minecraftforge.event.world.WorldEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import net.minecraftforge.fml.common.gameevent.InputEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent
 import rend.RendMain.Companion.mc
@@ -68,6 +70,18 @@ object Rend {
         }
     }
 
+    @SubscribeEvent
+    fun onKeyBind(e: InputEvent.KeyInputEvent) {
+        if (RendMain.rendKeybind.isPressed && isRunning) {
+            stopMacro()
+        }
+    }
+
+    @SubscribeEvent
+    fun onWorldLoad(e: WorldEvent.Load) {
+        stopMacro()
+    }
+
     private fun secondQueue() {
         actionQueue.addAll(listOf(
             ActionTask(2) { findItemInContainer("Warden")?.let { clickSlot(it) } ?: return@ActionTask stopMacro(); hitCount = 0 },
@@ -113,6 +127,7 @@ object Rend {
     }
 
     private fun stopMacro() {
+        if (!isRunning) return
         isRunning = false
         isWaitingGui = false
         isWaitingSound = false
@@ -131,8 +146,4 @@ object Rend {
             if (it is ContainerChest) mc.playerController?.windowClick(it.windowId, slot, 2, 3, mc.thePlayer)
         }
     }
-
-//    override fun onKeyBind() {
-//        stopMacro()
-//    }
 }
