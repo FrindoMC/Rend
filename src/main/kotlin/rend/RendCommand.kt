@@ -4,6 +4,7 @@ import net.minecraft.command.CommandBase
 import net.minecraft.command.ICommandSender
 import net.minecraft.command.NumberInvalidException
 import net.minecraft.command.WrongUsageException
+import rend.RendConfig.config
 import rend.utils.Utils.modMessage
 
 object RendCommand : CommandBase() {
@@ -26,19 +27,37 @@ object RendCommand : CommandBase() {
                 val delayValue = args[1].toIntOrNull() ?: throw NumberInvalidException("Invalid number: ${args[1]}")
                 handleDelay(delayValue)
             }
+            "eqdelay" -> {
+                if (args.size < 2) throw WrongUsageException(getCommandUsage(sender))
+                val delayValue = args[1].toIntOrNull() ?: throw NumberInvalidException("Invalid number: ${args[1]}")
+                handleEQDelay(delayValue)
+            }
+            "face" -> handleFace()
             else -> throw WrongUsageException(getCommandUsage(sender))
         }
     }
 
     private fun handleToggle() {
-        RendConfig.isEnabled = !RendConfig.isEnabled
-        modMessage("Rend toggle: ${RendConfig.isEnabled}")
+        config.isEnabled = !config.isEnabled
+        modMessage("Rend toggle: ${config.isEnabled}")
         RendConfig.save()
     }
 
     private fun handleDelay(value: Int) {
-        RendConfig.leftClickDelay = value
+        config.leftClickDelay = value
         modMessage("Left click delay is $value ticks.")
+        RendConfig.save()
+    }
+
+    private fun handleEQDelay(value: Int) {
+        config.eqDelay = value
+        modMessage("Equipment menu delay is $value ticks.")
+        RendConfig.save()
+    }
+
+    private fun handleFace() {
+        config.autoFaceKuudra = !config.autoFaceKuudra
+        modMessage("Auto face kuuudra: ${config.autoFaceKuudra}")
         RendConfig.save()
     }
 }

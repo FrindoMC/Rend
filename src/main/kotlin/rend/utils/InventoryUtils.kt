@@ -43,7 +43,6 @@ import rend.RendMain.Companion.mc
  *
  *
  * @author Aton
- * @see SkyblockItem
  */
 object InventoryUtils {
     /**
@@ -142,24 +141,6 @@ object InventoryUtils {
         return predicate(this.heldItem)
     }
 
-
-    /**
-     * Finds the first slot where an item name contains the specified [substring], with optional case insensitivity.
-     * Returns null if no matches were found.
-     *
-     * @param substring The substring to search for in the item names.
-     * @param ignoreCase Whether to ignore case sensitivity when comparing item names.
-     * @param inInv Whether to search in the entire inventory or just the hotbar.
-     */
-    fun findItemByNameContaining(substring: String, ignoreCase: Boolean = false, inInv: Boolean = false): Int? {
-        val searchSubstring = if (ignoreCase) substring.toLowerCase() else substring
-
-        return findItem(inInv) { itemStack ->
-            val itemName = itemStack?.displayName ?: return@findItem false
-            val itemNameToCheck = if (ignoreCase) itemName.toLowerCase() else itemName
-            itemNameToCheck.contains(searchSubstring)
-        }
-    }
 
     fun findItemInContainer(displayName: String): Int? {
         val container = mc.thePlayer.openContainer ?: return null
