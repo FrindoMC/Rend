@@ -22,6 +22,7 @@ import rend.utils.Utils.clickSlot
 import rend.utils.Utils.leftClick
 import rend.utils.Utils.modMessage
 import rend.utils.Utils.rightClick
+import rend.utils.Utils.rotate
 import rend.utils.Utils.stripControlCodes
 import rend.utils.Utils.swapToItem
 import java.util.*
@@ -53,7 +54,7 @@ object Rend {
     fun onPacketReceive(e: PacketReceivedEvent) {
         when (val packet = e.packet) {
             is S29PacketSoundEffect -> {
-                if (!mc.thePlayer.isHolding("terminator", "last", ignoreCase = true, mode = 1) || packet.soundName != "tile.piston.out" || !isWaitingSound) return
+                if (mc.thePlayer.isHolding("terminator", "last", ignoreCase = true, mode = 1) || packet.soundName != "tile.piston.out" || !isWaitingSound) return
                 if (++hitCount >= 2) {
                     modMessage("§2BackBone Hit while holding §4§l${mc.thePlayer.heldItem?.displayName?.stripControlCodes()} §2and wearing §4§l${mc.thePlayer.inventory.armorInventory[3]?.displayName?.stripControlCodes()}.")
                     isWaitingSound = false
@@ -61,7 +62,7 @@ object Rend {
             }
 
             is S08PacketPlayerPosLook -> {
-                if (floor(packet.x) ==  -102.0 && floor(packet.y) == 6.0 && floor(packet.z) == -106.0 && inKuudra && !hasTriggered && config.autoFaceKuudra) {
+                if (floor(packet.x) ==  -102.0 && floor(packet.y) == 6.0 && floor(packet.z) == -106.0 && config.autoFaceKuudra && !hasTriggered) {
                     hasTriggered = true
                     Timer().schedule(30) {
                         FaceKuudra()

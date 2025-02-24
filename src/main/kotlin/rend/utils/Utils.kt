@@ -67,6 +67,7 @@ object Utils {
 
         mc.thePlayer.rotate(yaw.toFloat(), 0.0f)
         KeyBinding.setKeyBindState(mc.gameSettings.keyBindForward.keyCode, true)
+        modMessage("facing kuudra $yaw")
     }
 
     fun leftClick() {
