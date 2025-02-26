@@ -1,5 +1,6 @@
 package rend
 
+import net.minecraft.network.play.client.C03PacketPlayer
 import net.minecraft.network.play.server.S08PacketPlayerPosLook
 import net.minecraft.network.play.server.S29PacketSoundEffect
 import net.minecraftforge.client.event.ClientChatReceivedEvent
@@ -16,13 +17,12 @@ import rend.utils.GuiEvent
 import rend.utils.InventoryUtils.findItemInContainer
 import rend.utils.InventoryUtils.isHolding
 import rend.utils.PacketReceivedEvent
-import rend.utils.Utils.FaceKuudra
-import rend.utils.Utils.LocateKuudra
 import rend.utils.Utils.clickSlot
+import rend.utils.Utils.faceKuudra
 import rend.utils.Utils.leftClick
+import rend.utils.Utils.locateKuudra
 import rend.utils.Utils.modMessage
 import rend.utils.Utils.rightClick
-import rend.utils.Utils.rotate
 import rend.utils.Utils.stripControlCodes
 import rend.utils.Utils.swapToItem
 import java.util.*
@@ -62,11 +62,29 @@ object Rend {
             }
 
             is S08PacketPlayerPosLook -> {
-                if (floor(packet.x) ==  -102.0 && floor(packet.y) == 6.0 && floor(packet.z) == -106.0 && config.autoFaceKuudra && !hasTriggered) {
+                if (floor(packet.x) ==  -102.0 && floor(packet.y) == 6.0 && floor(packet.z) == -106.0 && packet.pitch == 0.0f && inKuudra && !hasTriggered && config.autoFaceKuudra) {
+                    val entityPlayer = mc.thePlayer ?: return
                     hasTriggered = true
-                    Timer().schedule(30) {
-                        FaceKuudra()
-                    }
+                    e.isCanceled = true
+
+                    entityPlayer.setPosition(packet.x, packet.y, packet.z)
+                    val fakeYaw = packet.yaw % 360.0f
+                    val fakePitch = packet.pitch % 360.0f
+
+                    mc.netHandler.networkManager.sendPacket(
+                        C03PacketPlayer.C06PacketPlayerPosLook(
+                            entityPlayer.posX,
+                            entityPlayer.entityBoundingBox.minY,
+                            entityPlayer.posZ,
+                            fakeYaw,
+                            fakePitch,
+                            false
+                        )
+                    )
+
+                    modMessage("0 pitch should have worked if u seeing this")
+
+                    faceKuudra()
                 }
             }
 
@@ -121,7 +139,7 @@ object Rend {
 
     @SubscribeEvent
     fun onTick(e: ClientTickEvent) {
-        if (config.autoFaceKuudra) LocateKuudra()
+        if (config.autoFaceKuudra) locateKuudra()
         if (e.phase == TickEvent.Phase.START) processQueue()
     }
 
@@ -138,7 +156,7 @@ object Rend {
     fun onChat(e: ClientChatReceivedEvent) {
         val message = e.message.unformattedText
 
-        if (message.startsWith("[NPC] Elle: Okay adventurers, I will go and fish up Kuudra!")) inKuudra = true
+        if (message.equals("[NPC] Elle: Okay adventurers, I will go and fish up Kuudra!")) inKuudra = true
     }
 
     private fun startMacro() {

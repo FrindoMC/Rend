@@ -47,14 +47,14 @@ object Utils {
     }
 
     var kuudraEntity: EntityMagmaCube? = null
-    fun LocateKuudra() {
+    fun locateKuudra() {
         kuudraEntity = mc.theWorld?.loadedEntityList
             ?.filterIsInstance<EntityMagmaCube>()
             ?.firstOrNull { it.slimeSize == 30 && it.getSBMaxHealth() == 100000f }
     }
 
-    fun FaceKuudra() {
-        val kuudra = kuudraEntity ?: return
+    fun faceKuudra() {
+        val kuudra = kuudraEntity ?: return modMessage("Kuudra null")
         val kuudraPos = kuudra.positionVector
 
         val yaw = when {
@@ -67,7 +67,7 @@ object Utils {
 
         mc.thePlayer.rotate(yaw.toFloat(), 0.0f)
         KeyBinding.setKeyBindState(mc.gameSettings.keyBindForward.keyCode, true)
-        modMessage("facing kuudra $yaw")
+        modMessage("and auto face should have worked if u seeing this")
     }
 
     fun leftClick() {
